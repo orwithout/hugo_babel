@@ -1,0 +1,112 @@
+# hugo.toml
+baseURL = 'http://localhost:1313/'
+languageCode = 'en-us'
+title = 'iPZU'
+theme = ""
+preserveTaxonomyNames = true
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = true  # 改为 true 使所有语言都显示语言路径
+[taxonomies]
+udc = "udc"
+tag = "tags"
+
+[languages]
+[languages.en]
+languageName = "English"
+weight = 1
+title = "iPZU"
+[languages.en.params]
+description = "iP Zoom Up"
+keywords = "ipzu, intellectual property, zoom up, ai blog, aigc, ai creator, ai community"
+[[languages.en.menu.main]]
+identifier = "home"
+name = "Home"
+url = "/en/"
+weight = 1
+[[languages.en.menu.main]]
+identifier = "latest"
+name = "Latest"
+url = "/en/latest/"
+weight = 2
+[[languages.en.menu.main]]
+identifier = "tags"
+name = "Tags"
+url = "/en/tags/"
+weight = 3
+[[languages.en.menu.main]]
+identifier = "udc"
+name = "UDC"
+url = "/en/udc/"
+weight = 4
+[[languages.en.menu.main]]
+identifier = "users"
+name = "Users"
+url = "/en/users/"
+weight = 5
+
+[languages.zh]
+languageName = "中文"
+weight = 2
+title = "iPZU"
+[languages.zh.params]
+description = "iP族,Ai时代の创作者"
+keywords = "ipzu, ai博客, aigc, ai创作者,ai社群"
+[[languages.zh.menu.main]]
+identifier = "home"
+name = "首页"
+url = "/zh/"
+weight = 1
+[[languages.zh.menu.main]]
+identifier = "latest"
+name = "最新"
+url = "/zh/latest/"
+weight = 2
+[[languages.zh.menu.main]]
+identifier = "tags"
+name = "标签"
+url = "/zh/tags/"
+weight = 3
+[[languages.zh.menu.main]]
+identifier = "udc"
+name = "UDC"
+url = "/zh/udc/"
+weight = 4
+[[languages.zh.menu.main]]
+identifier = "users"
+name = "用户"
+url = "/zh/users/"
+weight = 5
+
+[languages.zh-tw]
+languageName = "繁体"
+weight = 3
+title = "iPZU"
+[languages.zh-tw.params]
+description = "iP族,Ai時代の創作者"
+keywords = "ipzu, ai博客, aigc, ai創作者,ai社群"
+[[languages.zh-tw.menu.main]]
+identifier = "home"
+name = "首頁"
+url = "/zh-tw/"
+weight = 1
+[[languages.zh-tw.menu.main]]
+identifier = "latest"
+name = "最新"
+url = "/zh-tw/latest/"
+weight = 2
+[[languages.zh-tw.menu.main]]
+identifier = "tags"
+name = "標籤"
+url = "/zh-tw/tags/"
+weight = 3
+[[languages.zh-tw.menu.main]]
+identifier = "udc"
+name = "UDC"
+url = "/zh-tw/udc/"
+weight = 4
+[[languages.zh-tw.menu.main]]
+identifier = "users"
+name = "用戶"
+url = "/zh-tw/users/"
+weight = 5
+

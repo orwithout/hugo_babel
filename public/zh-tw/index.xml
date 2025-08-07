@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>iPZU</title>
+    <link>http://localhost:1313/zh-tw/</link>
+    <description>Recent content on iPZU</description>
+    <generator>Hugo</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Thu, 01 May 2025 20:10:44 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/zh-tw/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Home</title>
+      <link>http://localhost:1313/zh-tw/i/0/home/</link>
+      <pubDate>Thu, 01 May 2025 20:10:44 +0800</pubDate>
+      <guid>http://localhost:1313/zh-tw/i/0/home/</guid>
+      <description>&lt;p&gt;23456789abcdefghijkmnpqrstuvwxyz&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

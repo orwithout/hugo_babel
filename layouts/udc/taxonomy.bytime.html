@@ -1,0 +1,72 @@
+{{ define "main" }}
+
+{{ partial "udc-breadcrumb.html" . }}<br>
+
+<style>
+  .grid {
+    display: grid;
+    width: max-content;
+    grid-template-columns:
+      minmax(3em, 6em)
+      fit-content(28em)
+      fit-content(23em);
+    justify-content: start;
+    column-gap: 1em;
+  }
+  .grid > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+
+  {{/* 收集所有顶层分类(不含"/")，并去重 */}}
+  {{ $roots := slice }}
+  {{ range $term, $pages := site.Taxonomies.udc }}
+    {{ $root := index (split $term "/") 0 }}
+    {{ if not (collections.In $roots $root) }}
+      {{ $roots = collections.Append $root $roots }}
+    {{ end }}
+  {{ end }}
+  {{ $roots = sort $roots }}
+
+  {{/* 组装包含"最新日期"和文章数的切片(使用 Scratch 避免 range 作用域限制) */}}
+  {{ $scratch := newScratch }}
+  {{ $scratch.Set "cats" (slice) }}
+  {{ range $roots }}
+    {{ $root := . }}
+
+    {{/* 统计文章数量并收集页面 */}}
+    {{ $cnt := 0 }}
+    {{ $pagesAll := slice }}
+    {{ range $t, $pages := site.Taxonomies.udc }}
+      {{ if or (eq $t $root) (hasPrefix $t (printf "%s/" $root)) }}
+        {{ $cnt = add $cnt (len $pages) }}
+        {{ $pagesAll = $pagesAll | append $pages }}
+      {{ end }}
+    {{ end }}
+
+    {{/* 最新日期字符串，格式 2006-01-02，用于排序与显示 */}}
+    {{ $latestStr := "" }}
+    {{ if gt (len $pagesAll) 0 }}
+      {{ $latest := index (sort $pagesAll "Date" "desc") 0 }}
+      {{ $latestStr = $latest.Date.Format "2006-01-02" }}
+    {{ end }}
+
+    {{ $scratch.Set "cats" ( $scratch.Get "cats" | append (dict "root" $root "cnt" $cnt "latest" $latestStr) ) }}
+  {{ end }}
+
+  {{ $cats := $scratch.Get "cats" }}
+
+<div class="grid">
+  <a href="{{ .RelPermalink }}_tr"><b>↓</b></a>
+  <a href="{{ .RelPermalink }}_cr">↨</a>
+  <a href="{{ .RelPermalink }}_r">↨</a>
+  {{ range sort $cats "latest" "asc" }}
+    <span>{{ .latest }}</span>
+    <span>{{ .cnt }}</span>
+    {{ $root := .root }}
+    <a href="{{ printf "/en/udc/%s/" ($root | urlize) | relURL }}">{{ $root }}</a>
+  {{ end }}
+</div>
+{{ end }}

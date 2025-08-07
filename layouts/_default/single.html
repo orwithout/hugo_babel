@@ -1,0 +1,39 @@
+{{ define "main" }}
+{{ range .Ancestors.Reverse }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a> ﹥ {{ end }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>
+
+{{ if .Params.udc }}
+<div class="post-udc">
+    {{ with (index (where .Site.Menus.main "Identifier" "udc") 0) }}<a href="{{ .URL }}">{{ .Name }}</a>{{ else }}分类{{ end }}:
+    {{ if reflect.IsSlice .Params.udc }}
+        {{ range .Params.udc }}
+            <a href="{{ "/udc/" | relLangURL }}{{ . | string | urlize }}">{{ . }}</a>
+        {{ end }}
+    {{ else }}
+        <a href="{{ "/udc/" | relLangURL }}{{ .Params.udc | urlize }}">{{ .Params.udc }}</a>
+    {{ end }}
+</div>
+{{ end }}
+{{ if .Params.tags }}
+<div class="post-tags">
+    {{ with (index (where .Site.Menus.main "Identifier" "tags") 0) }}<a href="{{ .URL }}">{{ .Name }}</a>{{ else }}标签{{ end }}:
+    {{ range .Params.tags }}
+    <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . }}</a>
+    {{ end }}
+</div>
+{{ end }}
+    <article class="post">
+        <h1>{{ .Title }}</h1>
+        {{ if .Date }}
+        <div class="post-date">
+            <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+                {{ .Date.Format "2006-01-02" }}
+            </time>
+        </div>
+        {{ end }}
+        <div class="post-content">
+    {{ .Content }}
+        </div>
+
+
+    </article>
+{{ end }}

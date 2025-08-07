@@ -1,0 +1,19 @@
+{{/* UDC 分类通用面包屑导航 */}}
+<a href="{{ "/udc/" | relLangURL }}">UDC</a>
+
+{{/* 若当前页面为具体 UDC term,则继续输出层级 */}}
+{{ if eq .Kind "term" }}
+  {{ $segments := split .Title "/" }}
+  {{ $crumbPath := "" }}
+  {{ range $segments }}
+    {{ $seg := . }}
+    {{ if ne $seg "" }}
+      {{ if eq $crumbPath "" }}
+        {{ $crumbPath = $seg }}
+      {{ else }}
+        {{ $crumbPath = printf "%s/%s" $crumbPath $seg }}
+      {{ end }}
+      ﹥ <a href="{{ printf "/udc/%s/" ($crumbPath | urlize) | relLangURL }}">{{ $seg }}</a>
+    {{ end }}
+  {{ end }}
+{{ end }} 

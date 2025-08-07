@@ -1,0 +1,97 @@
+# hugo.toml
+baseURL = 'http://localhost:1313/'
+languageCode = 'en-us'
+title = 'iPZU'
+theme = ""
+preserveTaxonomyNames = true
+
+defaultContentLanguage = "zh"
+defaultContentLanguageInSubdir = false  # 改为 false 以支持基于扩展名的方式
+
+[languages]
+[languages.en]
+  languageName = "English"
+  weight = 1
+  title = "My Hugo Website"
+  [languages.en.params]
+    description = "iPZU's Personal Website"
+    keywords = "iPZU, blog, technology"
+[languages.zh]
+  languageName = "中文"
+  weight = 2
+  title = "iPZU"
+  [languages.zh.params]
+    description = "iPZU 的个人网站"
+    keywords = "iPZU, 博客, 技术"
+[languages.tw]
+  languageName = "繁体"
+  weight = 3
+  title = "iPZU"
+  [languages.tw.params]
+    description = "iPZU 的个人网站"
+    keywords = "iPZU, 博客, 技术"
+
+
+
+[taxonomies]
+  udc = "udc"
+  tag = "tags"
+
+
+
+
+# 中文菜单
+[[languages.zh.menu.home]]
+  identifier = "home"
+  name = "iPZU"
+  url = "/zh/"
+  weight = 1
+[[languages.en.menu.home]]
+  identifier = "home"
+  name = "iPZU"
+  url = "/en/"
+  weight = 1
+
+
+
+
+[[languages.zh.menu.u0]]
+  identifier = "0"
+  name = "0"
+  url = "/zh/0/"
+  weight = 2
+[[languages.en.menu.u0]]
+  identifier = "0"
+  name = "0"
+  url = "/en/0/"
+  weight = 2
+
+
+
+
+[[languages.zh.menu.udc]]
+  identifier = "udc"
+  name = "udc"
+  url = "/zh/udc/"
+  weight = 3
+[[languages.en.menu.udc]]
+  identifier = "udc"
+  name = "udc"
+  url = "/en/udc/"
+  weight = 3
+
+
+
+
+[[languages.zh.menu.tags]]
+  identifier = "tags"
+  name = "标签"
+  url = "/zh/tags/"
+  weight = 4
+[[languages.en.menu.tags]]
+  identifier = "tags"
+  name = "Tags"
+  url = "/en/tags/"
+  weight = 4
+
+

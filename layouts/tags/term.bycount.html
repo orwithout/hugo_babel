@@ -1,0 +1,7 @@
+{{ define "main" }}
+<small><b><a href="{{ .RelPermalink | strings.TrimSuffix "_c/" }}">↨ 按名称</a></b></small><br>
+
+{{ range .Data.Terms.ByCount }}                 {{/* 按数量 */}}
+  ({{ .Count }}) <a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a><br>
+{{ end }}
+{{ end }}

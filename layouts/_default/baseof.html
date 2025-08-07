@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* 1. 开关样式，改为内联元素 */
+        .switch {
+            appearance: none;
+            display: inline-block; /* 改为内联块元素，可以和其他元素一起排版 */
+            vertical-align: middle; /* 垂直对齐 */
+            width: 34px; height: 17px; border-radius: 11px;
+            background: #ccc; cursor: pointer; transition: background .25s;
+            margin: 0 8px; /* 添加间距 */
+            position: relative; /* 为绝对定位的伪元素提供定位上下文 */
+        }
+        .switch::before {
+            content: "";
+            position: absolute; left: 1.5px; top: 2px;
+            width: 13px; height: 13px; border-radius: 50%;
+            background: #fff;
+            transition: transform .25s;
+        }
+        .switch:checked {background: #607d8b;}
+        .switch:checked::before {transform: translateX(18.5px);}
+        /* 2. 页面默认变量，防万一(不支持 prefers-color-scheme) */
+        :root {--bg: #fff;--fg: #222;}
+        /* 3. 系统"浅色"环境：开关 未勾 → 浅色；勾 → 暗色 */
+        @media (prefers-color-scheme: light) {
+            html:has(#theme-toggle:not(:checked)) {--bg: #fff;--fg: #222;}  /* 跟系统同：浅 */
+            html:has(#theme-toggle:checked) {--bg: #222;--fg: #f0f0f0;}      /* 反转：暗 */
+        }
+        /* 4. 系统"暗色"环境：开关 未勾 → 暗色；勾 → 浅色 */
+        @media (prefers-color-scheme: dark) {
+            html:has(#theme-toggle:not(:checked)) {--bg: #222;--fg: #f0f0f0;} /* 跟系统同：暗 */
+            html:has(#theme-toggle:checked) {--bg: #fff;--fg: #222;}  /* 反转：浅 */
+        }
+        /* 5. 真正生效：页面背景/前景从变量里来 */
+        .page {
+            min-height: 100vh;    /* 拉满视口高度 */
+            width: 100%;          /* 拉满视口宽度 */
+            /* box-sizing: border-box; */
+            background: var(--bg);
+            color: var(--fg);
+            transition: background .3s, color .3s;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+
+        /* 为select元素添加暗色模式样式 */
+        select {
+            background-color: var(--bg);
+            color: var(--fg);
+            border: 1px solid var(--fg);
+            border-radius: 2px;
+        }
+        
+        /* 为select的选项添加暗色模式样式 */
+        select option {
+            background-color: var(--bg);
+            color: var(--fg);
+        }
+
+        /* 版权信息样式 */
+        .copyright {
+            font-size: 0.5em;
+            opacity: 0.5;
+        }
+
+        html, body {
+            height: 100%;               /* 确保 body 撑满整个视口 */
+            margin: 0;                  /* 去掉默认的 margin */
+            padding: 0;
+            overflow-x: auto;           /* 超出时全局横向可滚动 */
+            -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
+            overscroll-behavior-x: contain;    /* 防止边缘回弹/侧滑导航 */
+        }
+    </style>
+
+    <!-- {{ hugo.Generator }} -->
+    {{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+    <!-- 添加JavaScript用于保存主题偏好设置 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            // 从localStorage中获取保存的状态
+            const savedState = localStorage.getItem('theme-toggle');
+            if (savedState !== null) {
+                themeToggle.checked = savedState === 'true';
+            }
+            
+            // 监听切换事件并保存状态
+            themeToggle.addEventListener('change', () => {
+                localStorage.setItem('theme-toggle', themeToggle.checked);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="page">
+        <nav>
+            {{ $currentLang := .Site.Language.Lang }}
+            {{ $currentPage := . }}
+            <select onchange="window.location.href=this.value">
+                {{ range .Site.Languages }}
+                    {{ $langURL := replace $currentPage.RelPermalink (printf "/%s/" $currentLang) (printf "/%s/" .Lang) }}
+                    <option value="{{ $langURL }}" {{ if eq .Lang $currentLang }}selected{{ end }}>
+                        {{ .LanguageName }}
+                    </option>
+                {{ end }}
+            </select>
+
+            {{ range .Site.Menus.main }}&nbsp;<a href="{{ .URL }}">{{ .Name }}</a>&nbsp;{{ end }}
+            <!-- 将开关移到导航栏中 -->
+            <input type="checkbox" id="theme-toggle" class="switch" />
+            <label for="theme-toggle" aria-label="切换亮 / 暗模式"></label>
+            <span class="copyright">&copy;{{ now.Format "2006" }}</span>
+
+        </nav>
+    <main>
+        {{ block "main" . }}{{ end }}
+    </main>
+    <footer>
+
+    </footer>
+</div>
+</body>
+</html> 

@@ -1,0 +1,45 @@
+{{ define "main" }}
+<style>
+    .grid {
+      display: grid;
+      width: max-content;  
+      grid-template-columns: 
+      minmax(3em, 6em)          /*按内容宽度调整,但最大为6em*/
+      /* fit-content(21em) */
+      fit-content(8em)
+      fit-content(23em);        /* repeat(3, minmax(3em, 12em)); 一次设定三列*/
+      justify-content: start;
+      column-gap: 1em;
+  
+    }
+    .grid > * {
+      white-space: nowrap;      /* 不换行 */
+      overflow: hidden;         /* 隐藏溢出 */
+      text-overflow: ellipsis;  /* 超出显示"…" */
+    }
+  </style>
+
+{{ range .Ancestors.Reverse }}<a href="{{ .RelPermalink }}_c">{{ .LinkTitle }}</a> ﹥ {{ end }}<a href="{{ .RelPermalink }}_c">{{ .Title }}</a>
+
+<div class="grid">
+    <a href="{{ .RelPermalink }}_tr">↨</a>
+    <a href="{{ .RelPermalink }}_cr"><b>↓</b></a>
+    <a href="{{ .RelPermalink }}_r">↨</a>
+  
+    {{ $all := append .Sections .RegularPages }}
+    {{ range sort $all "Pages" "asc" }}
+    <span>{{ .Date.Format "2006-01-02" }}</span>
+    {{ if eq .Kind "section" }}
+    <span>{{ len .Pages }}&nbsp;&nbsp;</span>
+    <a href="{{ .RelPermalink }}_c">{{ .Title }}/</a>
+    {{ else }}
+    <span>.</span>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{ end }}
+    {{ end }}
+
+  </div>
+
+{{ end }}
+
+

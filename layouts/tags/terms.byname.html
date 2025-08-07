@@ -1,0 +1,7 @@
+{{ define "main" }}
+<small><b><a href="{{ .RelPermalink }}_c">↨ 按数量</a></b></small><br>
+
+{{ range .Data.Terms.Alphabetical }}            {{/* 按名称 */}}
+  ({{ .Count }}) <a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a><br>
+{{ end }}
+{{ end }}

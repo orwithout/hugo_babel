@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>光波河流 Shader Demo</title>
+
+<!-- 1⃣ glslCanvas 仅 27 KB(未压缩，gzip≈9-10 KB)  -->
+<script src="https://cdn.jsdelivr.net/gh/patriciogonzalezvivo/glslCanvas/dist/GlslCanvas.min.js"></script>
+
+<style>
+html,body{background:#000;margin:0;height:100%;}
+body{display:flex;justify-content:center;align-items:center;font-family:sans-serif}
+/* 让用户感觉它是一个“活”的徽标 */
+canvas#river{
+  width:320px;height:320px;           /* 逻辑尺寸 */
+  border:2px solid #0ff;border-radius:16px;
+  cursor:none;                        /* 鼠标悬浮时隐藏光标 */
+  box-shadow:0 0 12px #0ff;
+}
+h1{position:absolute;top:8px;left:8px;color:#0ff;font-size:14px;font-weight:400;}
+</style>
+</head>
+<body>
+
+<h1>Move mouse ⇢</h1>
+<canvas id="river" width="640" height="640"></canvas> <!-- Hi-DPI：*2 -->
+
+<!-- 2⃣ 片元着色器：光波 + 闪耀 + 鼠标变色 -->
+<script id="frag" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2  u_resolution;
+uniform float u_time;
+uniform vec2  u_mouse;
+
+/* ----- 工具函数：HSV -> RGB ----- */
+vec3 hsv2rgb(vec3 c){
+    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0,4,2),6.0)-3.0)-1.0,0.0,1.0);
+    return c.z * mix(vec3(1.0), rgb, c.y);
+}
+
+/* 简易噪声 & fbm(流动扰动用) */
+float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+float noise(vec2 p){
+    vec2 i = floor(p), f = fract(p);
+    vec2 u = f*f*(3.0-2.0*f);
+    return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),
+               mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);
+}
+float fbm(vec2 p){
+    float v = 0.0, a = .5;
+    for(int i=0;i<4;i++){
+        v += a * noise(p); p*=2.0; a*=.5;
+    }
+    return v;
+}
+
+void main(){
+    /* 归一化坐标 */
+    vec2 st = (gl_FragCoord.xy/u_resolution.xy)*2.0-1.0;
+    st.x *= u_resolution.x/u_resolution.y;        // 保持纵横比
+
+    float t = u_time*0.4;
+    /* 1️⃣ 让河流摆动：沿 y 方向 FBM 扰动 x 坐标 */
+    float flow = fbm(vec2(st.y*3.0, t));
+    st.x += flow*0.15;
+
+    /* 2️⃣ 中心亮带 + 左右渐隐 */
+    float core  = smoothstep(.02,.0,abs(st.x));          // 窄亮心
+    float wave  = sin((st.y*10.-t*6.)+flow*3.)*0.15;      // 动态侧翼
+    float glow  = smoothstep(.05,.0,abs(st.x+wave));      // 宽柔光
+    float inten = clamp(core+glow,0.0,1.0);
+
+    /* 3️⃣ 鼠标颜色偏移：越近色相越偏蓝紫 */
+    vec2  m  = u_mouse/u_resolution;
+    float d  = distance(gl_FragCoord.xy/u_resolution.xy, m);
+    float hueShift = (1.0-smoothstep(.0,.5,d))*0.25;      // 0→0.25
+
+    /* 4️⃣ 组合颜色 + 星点闪耀 */
+    vec3  col = hsv2rgb(vec3(.55+hueShift+st.y*0.15, .8, inten*1.4));
+    float sparkle = pow(hash(gl_FragCoord.xy+u_time*50.), 20.0);
+    gl_FragColor = vec4(col + sparkle*.8*inten, 1.0);
+}
+</script>
+
+<script>
+/* 3⃣ 启动 glslCanvas，注入 shader */
+const canvas   = document.getElementById('river');
+const sandbox  = new GlslCanvas(canvas);
+sandbox.load(document.getElementById('frag').textContent);
+
+/* 4⃣ 鼠标交互：把坐标塞进 uniform u_mouse */
+canvas.addEventListener('mousemove', e=>{
+  const r = canvas.getBoundingClientRect();
+  sandbox.setUniform('u_mouse',
+    (e.clientX - r.left) * window.devicePixelRatio,
+    (r.height - (e.clientY - r.top)) * window.devicePixelRatio
+  );
+});
+
+/* 5⃣ 自适应 Hi-DPI(仅需一次，不连 resize) */
+canvas.width  *= window.devicePixelRatio;
+canvas.height *= window.devicePixelRatio;
+</script>
+</body>
+</html>

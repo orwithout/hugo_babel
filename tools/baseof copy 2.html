@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{ hugo.Generator }}
+    {{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+
+</head>
+<body>
+    <header>
+        <nav>
+            {{ $currentLang := .Site.Language.Lang }}
+            {{ $currentPage := . }}
+            {{ $currentTheme := .Params.theme | default "light" }}
+            
+            <select onchange="window.location.href=this.value">
+                {{ range .Site.Languages }}
+                    {{ $langURL := replace $currentPage.RelPermalink (printf "/%s/" $currentLang) (printf "/%s/" .Lang) }}
+                    {{ $langURLWithTheme := printf "%s?theme=%s" $langURL $currentTheme }}
+                    <option value="{{ $langURLWithTheme }}" {{ if eq .Lang $currentLang }}selected{{ end }}>
+                        {{ .LanguageName }}
+                    </option>
+                {{ end }}
+            </select>
+
+            {{ range .Site.Menus.main }}
+                {{ $menuURL := .URL }}
+                {{ if not (hasPrefix $menuURL "http") }}
+                    {{ $menuURL = printf "%s?theme=%s" $menuURL $currentTheme }}
+                {{ end }}
+                <a href="{{ $menuURL }}">{{ .Name }}</a>&nbsp;
+            {{ end }}
+
+            {{ if .Params.user }}
+                {{ $user := .Params.user }}
+                {{ $lang := .Site.Language.Lang }}
+                {{ if eq .Type "udc" }}
+                    {{ if .Title }}&nbsp; <span><a href="/{{ $lang }}/{{ $user }}/udc/{{ .Title | urlize }}?theme={{ $currentTheme }}">{{ .Title }}</a></span>{{ end }}
+                {{ end }}
+                {{ if eq .Type "tags" }}
+                    {{ if .Title }}&nbsp; <span><a href="/{{ $lang }}/{{ $user }}/tags/{{ .Title | urlize }}?theme={{ $currentTheme }}">{{ .Title }}</a></span>{{ end }}
+                {{ end }}
+            {{ end }}
+            
+            {{ if and .IsPage (ne .Type "tags") (ne .Type "udc") }}&nbsp; <span>{{ .Title }}</span>{{ end }}
+
+            {{ if eq $currentTheme "light" }}
+                <a href="?theme=dark">🌙</a>
+            {{ else }}
+                <a href="?theme=light">☀️</a>
+            {{ end }}
+        </nav>
+    </header>
+    <main>
+        {{ block "main" . }}{{ end }}
+    </main>
+    <footer>
+        <br>
+        <p>&copy; {{ now.Format "2006" }} - 人不工 - {{ .Site.Title }}</p>
+    </footer>
+</body>
+</html> 

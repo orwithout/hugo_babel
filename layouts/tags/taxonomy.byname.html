@@ -1,0 +1,14 @@
+{{ define "main" }}
+<small><a href="{{ .RelPermalink }}_cr">↨</a> &emsp; <b><a href="{{ .RelPermalink }}_r">↓</a></b></small><br>
+
+{{ range .Data.Terms.Alphabetical }}
+({{ .Count }}) <a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a><br>
+{{ end }}
+
+{{ range .Data.Terms }}
+  {{ $latest := index (sort .Pages "Date" "desc") 0 }}
+  {{ $latestDate := $latest.Date.Format "2006-01-02" }}
+  ({{ .Count }}) {{ $latestDate }} <a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a><br>
+{{ end }}
+
+{{ end }} 

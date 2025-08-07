@@ -1,0 +1,181 @@
+# hugo.toml
+baseURL = 'http://localhost:1313/'
+languageCode = 'en-us'
+title = 'iPZU'
+theme = ""
+preserveTaxonomyNames = true
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = true  # 改为 true 使所有语言都显示语言路径
+[taxonomies]
+udc = "udc"
+tag = "tags"
+
+
+[outputFormats]
+# 默认 HTML 输出
+[outputFormats.byname]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"       # 生成 index.html
+[outputFormats.bynamerev]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_r"
+[outputFormats.bytime]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_t"
+[outputFormats.bytimerev]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_tr"
+[outputFormats.bycount]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_c"
+[outputFormats.bycountrev]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_cr"
+
+[outputFormats.allbypath]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_p"
+[outputFormats.allbypathrev]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_pr"
+[outputFormats.allbytime]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_a"
+[outputFormats.allbytimerev]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_ar"
+[outputFormats.allbyname]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_n"
+[outputFormats.allbynamerev]
+mediaType = "text/html"
+isHTML    = true
+baseName  = "index"
+path      = "_nr"
+
+[outputs]
+section =  ["byname","bytime","bycount","bynamerev","bytimerev","bycountrev","allbytime","allbypath","allbyname","allbytimerev","allbypathrev","allbynamerev","rss"]
+home    =  ["byname","bytime","bycount","bynamerev","bytimerev","bycountrev","allbytime","allbypath","allbyname","allbytimerev","allbypathrev","allbynamerev","rss"]
+taxonomy = ["byname","bytime","bycount","bynamerev","bytimerev","bycountrev","rss"]
+term     = ["byname","bytime","bycount","bynamerev","bytimerev","bycountrev","rss"]
+
+[languages]
+[languages.en]
+languageName = "English"
+weight = 1
+title = "iPZU"
+[languages.en.params]
+description = "iP Zoom Up"
+keywords = "ipzu, intellectual property, zoom up, ai blog, aigc, ai creator, ai community"
+[[languages.en.menu.main]]
+identifier = "home"
+name = "Home"
+url = "/en/i/0/home"
+weight = 1
+[[languages.en.menu.main]]
+identifier = "tree"
+name = "Tree"
+url = "/en/"
+weight = 2
+[[languages.en.menu.main]]
+identifier = "tags"
+name = "Tags"
+url = "/en/tags/"
+weight = 3
+[[languages.en.menu.main]]
+identifier = "udc"
+name = "UDC"
+url = "/en/udc/"
+weight = 4
+[[languages.en.menu.main]]
+identifier = "all"
+name = "All"
+url = "/en/_a/"
+weight = 5
+
+[languages.zh]
+languageName = "中文"
+weight = 2
+title = "iPZU"
+[languages.zh.params]
+description = "iP族,Ai时代の创作者"
+keywords = "ipzu, ai博客, aigc, ai创作者,ai社群"
+[[languages.zh.menu.main]]
+identifier = "home"
+name = "首页"
+url = "/zh/i/0/home"
+weight = 1
+[[languages.zh.menu.main]]
+identifier = "tree"
+name = "目录"
+url = "/zh/"
+weight = 2
+[[languages.zh.menu.main]]
+identifier = "tags"
+name = "标签"
+url = "/zh/tags/"
+weight = 3
+[[languages.zh.menu.main]]
+identifier = "udc"
+name = "分类"
+url = "/zh/udc/"
+weight = 4
+[[languages.zh.menu.main]]
+identifier = "all"
+name = "全部"
+url = "/zh/_a/"
+weight = 5
+
+[languages.zh-tw]
+languageName = "繁体"
+weight = 3
+title = "iPZU"
+[languages.zh-tw.params]
+description = "iP族,Ai時代の創作者"
+keywords = "ipzu, ai博客, aigc, ai創作者,ai社群"
+[[languages.zh-tw.menu.main]]
+identifier = "home"
+name = "首頁"
+url = "/zh-tw/i/0/home"
+weight = 1
+[[languages.zh-tw.menu.main]]
+identifier = "tree"
+name = "目錄"
+url = "/zh-tw/"
+weight = 2
+[[languages.zh-tw.menu.main]]
+identifier = "tags"
+name = "標籤"
+url = "/zh-tw/tags/"
+weight = 3
+[[languages.zh-tw.menu.main]]
+identifier = "udc"
+name = "分類"
+url = "/zh-tw/udc/"
+weight = 4
+[[languages.zh-tw.menu.main]]
+identifier = "all"
+name = "全部"
+url = "/zh-tw/_a/"
+weight = 5

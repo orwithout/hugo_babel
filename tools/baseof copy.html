@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{ hugo.Generator }}
+    {{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+
+</head>
+<body>
+    <header>
+        <nav>
+            {{ if eq .Site.Language.Lang "en" }}
+                <a href="/">Home</a>&nbsp;
+                <a href="/0/">0</a>&nbsp;
+                <a href="/tags/">Tags</a>&nbsp;
+                <a href="/udc/">UDC</a>&nbsp;
+            {{ else if eq .Site.Language.Lang "zh" }}
+                <a href="/">首页</a>&nbsp;
+                <a href="/0/">0</a>&nbsp;
+                <a href="/tags/">标签</a>&nbsp;
+                <a href="/udc/">UDC</a>&nbsp;
+            {{ else if eq .Site.Language.Lang "zh-tw" }}
+                <a href="/">首頁</a>&nbsp;
+                <a href="/0/">0</a>&nbsp;
+                <a href="/tags/">標籤</a>&nbsp;
+                <a href="/udc/">UDC</a>&nbsp;
+            {{ end }}
+
+            {{ if .Params.user }}
+                {{ $user := .Params.user }}
+                {{ $lang := .Site.Language.Lang }}
+                {{ if eq .Type "udc" }}
+                    {{ if .Title }}&nbsp; <span><a href="/{{ $lang }}/{{ $user }}/udc/{{ .Title | urlize }}">{{ .Title }}</a></span>{{ end }}
+                {{ end }}
+                {{ if eq .Type "tags" }}
+                    {{ if .Title }}&nbsp; <span><a href="/{{ $lang }}/{{ $user }}/tags/{{ .Title | urlize }}">{{ .Title }}</a></span>{{ end }}
+                {{ end }}
+            {{ end }}
+            
+            {{ if and .IsPage (ne .Type "tags") (ne .Type "udc") }}&nbsp; <span>{{ .Title }}</span>{{ end }}
+        </nav>
+    </header>
+    <main>
+        {{ block "main" . }}{{ end }}
+    </main>
+    <footer>
+        <br>
+        <p>&copy; {{ now.Format "2006" }} - 人不工 - {{ .Site.Title }}</p>
+    </footer>
+</body>
+</html> 

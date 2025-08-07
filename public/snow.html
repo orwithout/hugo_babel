@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>雪火双态 Shader 按钮</title>
+<!-- glslCanvas CDN：≈27 KB，gzip≈9–10 KB -->
+<script src="https://cdn.jsdelivr.net/gh/patriciogonzalezvivo/glslCanvas/dist/GlslCanvas.min.js"></script>
+<style>
+  html,body{
+    background:#111; /* 方便调试，正式可去掉 */
+    margin:0;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;
+  }
+  #fxWrapper{
+    position:relative;
+  }
+  canvas#fx{
+    width:260px;height:90px;              /* 逻辑尺寸 */
+    border:2px solid #0af;border-radius:12px;
+    background:transparent;               /* 关键：透明背景 */
+    cursor:pointer;user-select:none;
+  }
+  #tip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#0af;font-size:18px;pointer-events:none;transition:opacity .3s;}
+  #time{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#ffd; font-size:24px;font-weight:bold;pointer-events:none;opacity:0;transition:opacity .3s;}
+</style>
+</head>
+<body>
+  <div id="fxWrapper">
+    <canvas id="fx" width="520" height="180"></canvas><!-- Hi‑DPI *2 -->
+    <div id="tip">点击启动</div>
+    <div id="time"></div>
+  </div>
+
+<!-- ===== 雪：蓝色暴雪 ===== -->
+<script id="snowFrag" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
+uniform vec2  u_resolution;
+uniform float u_time;
+void main(){
+  vec2 uv = gl_FragCoord.xy/u_resolution.xy;
+  vec3 col = vec3(0.0);
+  float t = u_time*0.8;
+  // 三层雪花，速度/尺寸不同
+  for(int i=0;i<3;i++){
+    float scale = pow(2.0,float(i));
+    vec2 p = fract(uv*scale + vec2(0.0,t/scale));
+    float d = length(p-0.5);
+    float a = smoothstep(0.03/scale,0.0,d);
+    col += vec3(0.3,0.6,1.0)*a;
+  }
+  // alpha = 亮度，用以透明背景
+  float alpha = clamp(max(col.r,col.g),0.0,1.0);
+  gl_FragColor = vec4(col, alpha);
+}
+</script>
+
+<!-- ===== 火：熊熊火焰 ===== -->
+<script id="fireFrag" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
+uniform vec2  u_resolution;
+uniform float u_time;
+// 适度噪声
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);} 
+float noise(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f*f*(3.0-2.0*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);
+}
+void main(){
+  vec2 uv = gl_FragCoord.xy/u_resolution.xy;
+  float t = u_time*1.2;
+  // 从底部上升的火焰形
+  float y = uv.y;
+  float n = noise(vec2(uv.x*3.0, y*4.0 - t*2.0));
+  float flame = smoothstep(0.3 + n*0.15, y, 0.8);
+  vec3 base = mix(vec3(1.0,0.5,0.0), vec3(1.0,1.0,0.0), y);
+  vec3 col = base * flame;
+  float alpha = flame;
+  gl_FragColor = vec4(col, alpha);
+}
+</script>
+
+<script>
+const canvas   = document.getElementById('fx');
+const tip      = document.getElementById('tip');
+const timeDiv  = document.getElementById('time');
+canvas.width  *= window.devicePixelRatio;
+canvas.height *= window.devicePixelRatio;
+const sandbox  = new GlslCanvas(canvas);
+let mode = 'blank';
+let timer = null;
+
+function showTime(){
+  const now = new Date();
+  const str = now.toLocaleTimeString('zh-CN', {hour12:false});
+  timeDiv.textContent = str;
+}
+
+function switchToSnow(){
+  sandbox.load(document.getElementById('snowFrag').textContent);
+  mode='snow';
+  tip.style.opacity=0;
+  timeDiv.style.opacity=0;
+  clearInterval(timer);
+}
+function switchToFire(){
+  sandbox.load(document.getElementById('fireFrag').textContent);
+  mode='fire';
+  timeDiv.style.opacity=1;
+  showTime();
+  timer = setInterval(showTime, 1000);
+}
+
+// 初次点击→雪
+canvas.addEventListener('click',()=>{
+  if(mode==='blank') switchToSnow();
+});
+// 悬停→火  离开→雪
+canvas.addEventListener('mouseenter',()=>{
+  if(mode!=='blank') switchToFire();
+});
+canvas.addEventListener('mouseleave',()=>{
+  if(mode==='fire') switchToSnow();
+});
+</script>
+</body>
+</html>

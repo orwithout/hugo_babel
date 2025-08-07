@@ -1,0 +1,86 @@
+{{ define "main" }}
+<style>
+  .grid {
+    display: grid;
+    width: max-content;
+    grid-template-columns:
+      minmax(3em, 6em)
+      fit-content(8em)
+      minmax(18em, 34em);
+    justify-content: start;
+    column-gap: 1em;
+  }
+  .grid > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+
+{{/* 面包屑导航 */}}
+{{ partial "udc-breadcrumb.html" . }}
+
+{{ $term := .Title }}
+
+{{/* 收集直接子分类 */}}
+{{ $children := slice }}
+{{ range $t, $pages := site.Taxonomies.udc }}
+  {{ if and (hasPrefix $t (printf "%s/" $term)) (ne $t $term) }}
+    {{ $parts := split $t "/" }}
+    {{ $child := index $parts (len (split $term "/")) }}
+    {{ if not (collections.In $children $child) }}
+      {{ $children = collections.Append $child $children }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* 使用 Scratch 来存储分类信息 */}}
+{{ $scratch := newScratch }}
+{{ $scratch.Set "cats" (slice) }}
+
+{{ range $children }}
+  {{ $full := printf "%s/%s" $term . }}
+  {{/* 统计当前分类及其子分类的文章数量，并收集所有页面 */}}
+  {{ $cnt := 0 }}
+  {{ $pagesAll := slice }}
+  {{ range $t, $pages := site.Taxonomies.udc }}
+    {{ if or (eq $t $full) (hasPrefix $t (printf "%s/" $full)) }}
+      {{ $cnt = add $cnt (len $pages) }}
+      {{ $pagesAll = $pagesAll | append $pages }}
+    {{ end }}
+  {{ end }}
+
+  {{/* 获取最新文章时间 */}}
+  {{ $latestDate := "" }}
+  {{ if gt (len $pagesAll) 0 }}
+    {{ $latest := index (sort $pagesAll "Date" "desc") 0 }}
+    {{ $latestDate = $latest.Date.Format "2006-01-02" }}
+  {{ end }}
+
+  {{ $scratch.Set "cats" ( $scratch.Get "cats" | append (dict "name" . "full" $full "cnt" $cnt "latest" $latestDate) ) }}
+{{ end }}
+
+{{ $items := slice }}
+
+{{ $cats := $scratch.Get "cats" }}
+{{ range $cats }}
+    {{ $items = $items | append (dict "kind" "cat" "title" .name "latest" .latest "cnt" .cnt "url" (printf "/en/udc/%s/" (.full | urlize) | relURL)) }}
+{{ end }}
+
+{{ range .Pages }}
+    {{ $items = $items | append (dict "kind" "page" "title" (printf "%s%s" .File.Dir .Title) "latest" (.Date.Format "2006-01-02") "cnt" 1 "url" .RelPermalink) }}
+{{ end }}
+
+{{ if gt (len $items) 0 }}
+<div class="grid">
+  <a href="{{ .RelPermalink }}_tr">↨</a>
+  <a href="{{ .RelPermalink }}_cr"><b>↓</b></a>
+  <a href="{{ .RelPermalink }}_r">↨</a>
+  {{ range sort $items "cnt" "asc" }}
+      <span>{{ cond (ne .latest "") .latest "." }}</span>
+      <span>{{ .cnt }}</span>
+      <a href="{{ .url }}">{{ .title }}</a>
+  {{ end }}
+</div>
+{{ end }}
+{{ end }} 

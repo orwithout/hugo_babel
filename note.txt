@@ -1,0 +1,10 @@
+Hugo 页面列表变量
+除了 .Site.RegularPages 和 .Pages 外，Hugo 还有以下变量可用于列出页面：
+.Site.Pages - 所有页面，包括常规页面、首页、分类页等
+.Site.AllPages - 所有语言的所有页面
+.Site.Sections - 所有区块(一级目录)
+.Site.Home.Pages - 首页的子页面
+.Site.Home.Sections - 首页的区块
+.Sections - 当前页面的子区块
+.RegularPages - 当前上下文下的常规页面
+.RegularPagesRecursive - 递归获取当前上下文及其所有子目录的常规页面

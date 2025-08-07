@@ -1,0 +1,10 @@
+{{ define "main" }}
+
+
+{{/* 当前分类文章 */}}
+{{ if .Pages }}
+    {{ range .Pages }}
+      <a href="{{ .RelPermalink }}">{{ .File.Dir }}{{ .Title }}</a><br>
+    {{ end }}
+{{ end }}
+{{ end }}
