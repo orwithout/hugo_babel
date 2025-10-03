@@ -18,6 +18,7 @@
     text-overflow: ellipsis;  /* 超出显示"…" */
   }
 </style>
+
 {{ range .Ancestors.Reverse }}<a href="{{ .RelPermalink }}_t">{{ .LinkTitle }}</a> ﹥ {{ end }}<a href="{{ .RelPermalink }}_t">{{ .Title }}</a>
 
 <div class="grid">
@@ -34,7 +35,8 @@
 
   {{ range sort $pagesToShow "Date" "desc" }}
   <span>{{ .Date.Format "2006-01-02" }}</span>
-    <a href="{{ printf "/%s" .File.Dir | relLangURL }}_t">{{ .File.Dir }}</a>
+  <!-- <a href="{{ printf "/%s" .File.Dir | relLangURL }}_t">{{ .File.Dir }}</a> -->
+  <a href="{{ printf "/%s" (path.Clean .File.Dir) | relLangURL }}/_n">{{ path.Clean .File.Dir }}/</a>
   <a href="{{ .RelPermalink }}">{{ .Title }}</a>
   {{ end }}
 

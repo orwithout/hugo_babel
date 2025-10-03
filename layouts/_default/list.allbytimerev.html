@@ -1,45 +1,45 @@
 {{ define "main" }}
 <style>
-    .grid {
-      display: grid;
-      width: max-content;  
-      grid-template-columns: 
-      minmax(3em, 6em)          /*按内容宽度调整,但最大为6em*/
-      /* fit-content(21em) */
-      fit-content(23em)
-      fit-content(23em);        /* repeat(3, minmax(3em, 12em)); 一次设定三列*/
-      justify-content: start;
-      column-gap: 1em;
-  
-    }
-    .grid > * {
-      white-space: nowrap;      /* 不换行 */
-      overflow: hidden;         /* 隐藏溢出 */
-      text-overflow: ellipsis;  /* 超出显示"…" */
-    }
-  </style>
+  .grid {
+    display: grid;
+    width: max-content;  
+    grid-template-columns: 
+    minmax(3em, 6em)          /*按内容宽度调整,但最大为6em*/
+    /* fit-content(21em) */
+    fit-content(23em)
+    fit-content(23em);        /* repeat(3, minmax(3em, 12em)); 一次设定三列*/
+    justify-content: start;
+    column-gap: 1em;
+
+  }
+  .grid > * {
+    white-space: nowrap;      /* 不换行 */
+    overflow: hidden;         /* 隐藏溢出 */
+    text-overflow: ellipsis;  /* 超出显示"…" */
+  }
+</style>
 
 {{ range .Ancestors.Reverse }}<a href="{{ .RelPermalink }}_tr">{{ .LinkTitle }}</a> ﹥ {{ end }}<a href="{{ .RelPermalink }}_tr">{{ .Title }}</a>
 
-
 <div class="grid">
-    <a href="{{ .RelPermalink }}_a"><b>↓</b></a>
-    <a href="{{ .RelPermalink }}_pr">↨</a>
-    <a href="{{ .RelPermalink }}_nr">↨</a>
-  
-    {{/* 根据当前上下文递归获取所有页面(包括子section的) */}}
-    {{ $pagesToShow := .RegularPagesRecursive }}
-    {{ if eq .Kind "home" }}
-      {{/* 在首页，显示全站内容 */}}
-      {{ $pagesToShow = .Site.RegularPages }}
-    {{ end }}
+  <a href="{{ .RelPermalink }}_a"><b>↓</b></a>
+  <a href="{{ .RelPermalink }}_pr">↨</a>
+  <a href="{{ .RelPermalink }}_nr">↨</a>
 
-    {{ range sort $pagesToShow "Date" "asc" }}
-    <span>{{ .Date.Format "2006-01-02" }}</span>
-    <a href="{{ printf "/%s" .File.Dir | relLangURL }}_tr">{{ .File.Dir }}</a>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-    {{ end }}
-  
-  </div>
+  {{/* 根据当前上下文递归获取所有页面(包括子section的) */}}
+  {{ $pagesToShow := .RegularPagesRecursive }}
+  {{ if eq .Kind "home" }}
+    {{/* 在首页，显示全站内容 */}}
+    {{ $pagesToShow = .Site.RegularPages }}
+  {{ end }}
+
+  {{ range sort $pagesToShow "Date" "asc" }}
+  <span>{{ .Date.Format "2006-01-02" }}</span>
+  <!-- <a href="{{ printf "/%s" .File.Dir | relLangURL }}_tr">{{ .File.Dir }}</a> -->
+  <a href="{{ printf "/%s" (path.Clean .File.Dir) | relLangURL }}/_n">{{ path.Clean .File.Dir }}/</a>
+  <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  {{ end }}
+
+</div>
 
 {{ end }}

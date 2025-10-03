@@ -1,0 +1,15 @@
+// 内容自动生成, 请在env.cmd 修订, 否者将会被覆盖 
+// Content is auto generated, Revise it in env.cmd or it will be overwritten 
+{
+  "python.defaultInterpreterPath": "/python.exe",
+  "python.terminal.activateEnvironment": true,
+ 
+  "terminal.integrated.defaultProfile.windows": "pwsh",
+  "terminal.integrated.profiles.windows": {
+    "pwsh": {
+      "path": "E:/git_renbugong/hugo_babel/nodes/_env/pwsh/pwsh.exe",
+      "args": [],
+      "overrideName": true
+    }
+  }
+}

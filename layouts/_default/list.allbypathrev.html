@@ -36,8 +36,9 @@
 
     {{ range sort $pagesToShow "File.Dir" "desc" }}
     <span>{{ .Date.Format "2006-01-02" }}</span>
-    <a href="{{ printf "/%s" .File.Dir | relLangURL }}_pr">{{ .File.Dir }}</a>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    <!-- <a href="{{ printf "/%s" .File.Dir | relLangURL }}_pr">{{ .File.Dir }}</a> -->
+  <a href="{{ printf "/%s" (path.Clean .File.Dir) | relLangURL }}/_n">{{ path.Clean .File.Dir }}/</a>
+  <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     {{ end }}
   
   </div>
